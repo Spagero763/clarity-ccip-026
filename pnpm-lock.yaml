@@ -26,6 +26,9 @@ importers:
       chokidar-cli:
         specifier: 3.0.0
         version: 3.0.0
+      clarity-abitype:
+        specifier: ^0.2.2
+        version: 0.2.2(typescript@5.9.2)
       stxer:
         specifier: 0.4.3
         version: 0.4.3(typescript@5.9.2)
@@ -481,6 +484,14 @@ packages:
     resolution: {integrity: sha512-+hf+M/MXsZY7DeGsVOXwc6p8Fbq3xNm1Gdp2R3ASdUtXMDmdnAZPEg2RSI5kQu7sFhAkBvgLdpXvsv8E05m29g==}
     peerDependencies:
       typescript: '>=5.0.4'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  clarity-abitype@0.2.2:
+    resolution: {integrity: sha512-4vfi2E14PImASoBmXZYtT4n9uvnPrQPpyA8F14PnFb7lldXKTWdKFW2rzumN0In32h7YcsGD8d09Cz6awfXxYQ==}
+    peerDependencies:
+      typescript: '>=5.1.0'
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -1383,6 +1394,10 @@ snapshots:
       fsevents: 2.3.3
 
   clarity-abi@0.1.0(typescript@5.9.2):
+    optionalDependencies:
+      typescript: 5.9.2
+
+  clarity-abitype@0.2.2(typescript@5.9.2):
     optionalDependencies:
       typescript: 5.9.2
 
