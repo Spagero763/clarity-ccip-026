@@ -1,8 +1,12 @@
+;; Helper function for logical implication (A implies B)
+(define-private (implies (a bool) (b bool))
+  (or (not a) b)
+)
 
 (define-public (test-get-redemption-for-balance (amountUMia uint))
   (match (get-redemption-for-balance (* amountUMia u1000000000))
     uStx (begin
-      (asserts! (is-eq uStx  (/ (* u1700 amountUMia u1000000000) u1000000)) (err u9999))
+      (asserts! (is-eq uStx (/ (* u1700 amountUMia u1000000000) u1000000)) (err u9999))
       (ok true))
     error (ok false)
   )
@@ -53,18 +57,16 @@
       (result (redeem-mia amountUMia))
     )
     (match result
-      redeemed (begin
-        (let (
-            (redeemedMia (get uMia redeemed))
-            (redeemedStx (get uStx redeemed))
-            (expectedStx (/ (* redeemedMia u1700) u1000000)) ;; REDEMPTION_RATIO / REDEMPTION_SCALE_FACTOR
-          )
-          ;; Property: STX received should match the redemption ratio for the actual MIA redeemed
-          ;; Allow for some tolerance due to rounding
-          (asserts! (<= redeemedStx (+ expectedStx u1)) (err u9996))
-          (asserts! (>= redeemedStx (- expectedStx u1)) (err u9995))
-          (ok true)
+      redeemed (let (
+          (redeemedMia (get uMia redeemed))
+          (redeemedStx (get uStx redeemed))
+          (expectedStx (/ (* redeemedMia u1700) u1000000)) ;; REDEMPTION_RATIO / REDEMPTION_SCALE_FACTOR
         )
+        ;; Property: STX received should match the redemption ratio for the actual MIA redeemed
+        ;; Allow for some tolerance due to rounding
+        (asserts! (<= redeemedStx (+ expectedStx u1)) (err u9996))
+        (asserts! (>= redeemedStx (- expectedStx u1)) (err u9995))
+        (ok true)
       )
       error (ok true) ;; Errors are acceptable for this property
     )
@@ -152,7 +154,7 @@
       (ustx-transferred (get-total-transferred))
       (total (+ ustx-rewards-treasury ustx-transferred))
     )
-    (asserts!  (or (is-eq total u31767086308) (is-eq total u953618961322)) (err total))
+    (asserts! (or (is-eq total u31767086308) (is-eq total u953618961322)) (err total))
     (ok true)
   )
 )
@@ -175,9 +177,4 @@
     )
     (or (is-eq total u31767086308) (is-eq total u953618961322))
   )
-)
-
-;; Helper function for logical implication (A implies B)
-(define-private (implies (a bool) (b bool))
-  (or (not a) b)
 )
