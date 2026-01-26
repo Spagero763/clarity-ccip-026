@@ -21,6 +21,26 @@
 (define-constant REDEMPTION_RATIO u1700) ;; start with 0.0017 STX per MIA
 (define-constant MAX_PER_TRANSACTION (* u10000000 MICRO_CITYCOINS)) ;; max 10m MIA per transaction
 
+(define-event redemption-executed
+  (user principal)
+  (mia-burned uint)
+  (mia-v1-burned uint)
+  (mia-v2-burned uint)
+  (stx-received uint)
+  (redemption-ratio uint)
+  (timestamp uint)
+)
+
+(define-event redemptions-enabled
+  (enabled-by principal)
+  (timestamp uint)
+)
+
+(define-event treasury-delegation-revoked
+  (revoked-by principal)
+  (timestamp uint)
+)
+
 ;; DATA VARS
 (define-data-var redemptionsEnabled bool false)
 
@@ -69,6 +89,8 @@
     ))
     ;; enable redemptions
     (var-set redemptionsEnabled true)
+      (emit-event (treasury-delegation-revoked tx-sender stacks-block-height))
+    (emit-event (redemptions-enabled tx-sender stacks-block-height))
     (ok (print {
       notification: "intialize-contract",
       payload: (get-redemption-info),
@@ -153,6 +175,15 @@
       uMia: (+ (get uMia redemptionClaimed) redemptionTotalUMia),
       uStx: (+ (get uStx redemptionClaimed) redemptionAmountUStx),
     })
+    (emit-event (redemption-executed
+      userAddress
+      redemptionTotalUMia
+      redemptionAmountUMiaV1
+      redemptionAmountUMiaV2
+      redemptionAmountUStx
+      REDEMPTION_RATIO
+      stacks-block-height
+    ))
     ;; print redemption info
     (print {
       notification: "contract-redemption",
