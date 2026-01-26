@@ -70,7 +70,7 @@
     ;; enable redemptions
     (var-set redemptionsEnabled true)
     (ok (print {
-      notification: "intialize-contract",
+      notification: "initialize-contract",
       payload: (get-redemption-info),
     }))
   )
@@ -126,20 +126,20 @@
     ;; check that redemption amount is > 0
     (asserts! (> redemptionAmountUStx u0) ERR_NOTHING_TO_REDEEM)
     ;; burn MIA tokens v1
-    (and
-      (> redemptionV1InMia u0)
+    (if (> redemptionV1InMia u0)
       (try! (contract-call?
         'SP1H1733V5MZ3SZ9XRW9FKYGEZT0JDGEB8Y634C7R.miamicoin-core-v1-patch
         burn-mia-v1 redemptionV1InMia userAddress
       ))
+      true
     )
     ;; burn MIA tokens v2   
-    (and
-      (> redemptionAmountUMiaV2 u0)
+    (if (> redemptionAmountUMiaV2 u0)
       (try! (contract-call?
         'SP1H1733V5MZ3SZ9XRW9FKYGEZT0JDGEB8Y634C7R.miamicoin-token-v2 burn
         redemptionAmountUMiaV2 userAddress
       ))
+      true
     )
     ;; transfer STX
     (try! (contract-call?
@@ -219,7 +219,7 @@
     (if (< redemptionAmount contractCurrentBalance)
       ;; if redemption amount is less than contract balance, return redemption amount
       (ok redemptionAmount)
-      ;; if redemption amount is greater than contract balance, thrown an error
+      ;; if redemption amount is greater than contract balance, throw an error
       ERR_NOT_ENOUGH_FUNDS_IN_CONTRACT
     )
   )
