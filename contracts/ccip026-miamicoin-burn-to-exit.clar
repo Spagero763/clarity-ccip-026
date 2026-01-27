@@ -87,14 +87,18 @@
 
 ;; PUBLIC FUNCTIONS
 
+;; Execute the proposal after vote passes
+;; Can only be called through the DAO's direct-execute mechanism
+;; @param sender - The principal executing the proposal
+;; @returns (response bool uint) - true on success
 (define-public (execute (sender principal))
   (begin
-    ;; check vote is complete/passed
+    ;; Verify vote has passed (yes votes > no votes)
     (try! (is-executable))
-    ;; update vote variables
+    ;; Mark voting as complete
     (var-set voteEnd stacks-block-height)
     (var-set voteActive false)
-    ;; enable new treasuries in the DAO
+    ;; Enable the burn-to-exit extension in the DAO
     (try! (contract-call? 'SP8A9HZ3PKST0S42VM9523Z9NV42SZ026V4K39WH.base-dao
       set-extensions
       (list
@@ -103,11 +107,15 @@
           enabled: true,
         }
       )))
+    ;; Initialize the redemption contract (revokes delegation, enables redemptions)
     (try! (contract-call? .ccd013-burn-to-exit-mia initialize))
     (ok true)
   )
 )
 
+;; Cast or change a vote on the proposal
+;; @param vote - true for yes, false for no
+;; @returns (response bool uint) - true on success
 (define-public (vote-on-proposal (vote bool))
   (let (
       (voterId (unwrap!
