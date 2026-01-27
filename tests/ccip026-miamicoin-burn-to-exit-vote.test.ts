@@ -13,6 +13,22 @@ import { describe, expect, it } from "vitest";
 import { vote } from "./clients/ccip026-miamicoin-burn-to-exit-client";
 
 /**
+ * CCIP026 Vote Tests
+ * 
+ * This test suite validates the voting mechanism for CCIP-026: MiamiCoin Burn to Exit.
+ * Uses Mainnet Execution Simulation (MXS) at block height 3,491,155 to test with
+ * real stacker data and voting weights.
+ * 
+ * Key Test Addresses (Real Mainnet Stackers):
+ * - SP39EH784WK8VYG0SXEVA0M81DGECRE25JYSZ5XSA: Large stacker (144.479B MIA voting power)
+ * - SP1T91N2Y2TE5M937FE3R6DE0HGWD85SGCV50T95A: Smaller stacker (2.086B MIA voting power)
+ * 
+ * Vote Outcome Rules:
+ * - Proposal passes if totalAmountYes > totalAmountNo
+ * - ERR_VOTE_FAILED (26007) if no votes exceed yes votes
+ */
+
+/**
  * Helper function to verify vote totals in the CityVotes map
  * @param totalAmountYes - Expected total MIA amount voting yes
  * @param totalVotesYes - Expected number of yes votes
