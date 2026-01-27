@@ -46,6 +46,16 @@ export const directExecute = (sender: string) => {
   );
 };
 
+/**
+ * Redeem MIA tokens for STX
+ * 
+ * Burns the specified amount of MIA tokens and receives STX in return.
+ * Redemption ratio: 1,700 STX per 1,000,000 MIA (0.0017 STX per MIA)
+ * 
+ * @param sender - The principal address redeeming tokens
+ * @param amount - The amount of MIA to redeem (in micro-MIA)
+ * @returns Transaction to redeem MIA for STX
+ */
 export const redeem = (sender: string, amount: number) => {
   return tx.callPublicFn(
     "ccd013-burn-to-exit-mia",
@@ -55,6 +65,15 @@ export const redeem = (sender: string, amount: number) => {
   );
 };
 
+/**
+ * Convert V1 MIA tokens to V2
+ * 
+ * Calls the official MiamiCoin token-v2 contract to convert
+ * any V1 tokens the sender holds to V2 tokens.
+ * 
+ * @param sender - The principal address converting tokens
+ * @returns Transaction to convert V1 to V2 tokens
+ */
 export const convertToV2 = (sender: string) => {
   return tx.callPublicFn(
     "SP1H1733V5MZ3SZ9XRW9FKYGEZT0JDGEB8Y634C7R.miamicoin-token-v2",
