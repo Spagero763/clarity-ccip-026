@@ -32,42 +32,52 @@ describe("CCD013 Burn to Exit MIA", () => {
       directExecute("SPN4Y5QPGQA8882ZXW90ADC2DHYXMSTN8VAR8C3X"),
     ]);
 
-    expect(txReceipts[0].result).toBeOk(uintCV(1));
-    expect(txReceipts[1].result).toBeOk(uintCV(2));
-    expect(txReceipts[2].result).toBeOk(uintCV(3));
+    // Verify each signer's execution succeeds
+    expect(txReceipts[0].result).toBeOk(uintCV(1)); // first approval
+    expect(txReceipts[1].result).toBeOk(uintCV(2)); // second approval
+    expect(txReceipts[2].result).toBeOk(uintCV(3)); // third approval - threshold met
 
+    // Step 3: Test redemption scenarios
     txReceipts = simnet.mineBlock([
-      // redeem
+      // Redeem V2 tokens
       redeem("SP39EH784WK8VYG0SXEVA0M81DGECRE25JYSZ5XSA", 321_825_000000),
-      // redeem more than user owns (0 MIA)
+      // Try to redeem again with no balance - should fail
       redeem("SP39EH784WK8VYG0SXEVA0M81DGECRE25JYSZ5XSA", 321_825_000000),
-      // redeem holder of v1
+      // Redeem V1 tokens (holder of v1)
       redeem("SP22HP2QFA16AAP62HJWD85AKMYJ5AYRTH7TBT9MX", 800_000_000000),
-      // convert to v2 (0 MIA)
+      // Try to convert to v2 after redeeming - should fail
       convertToV2("SP22HP2QFA16AAP62HJWD85AKMYJ5AYRTH7TBT9MX"),
-      // redeem holder again
+      // Try to redeem again with no balance - should fail
       redeem("SP22HP2QFA16AAP62HJWD85AKMYJ5AYRTH7TBT9MX", 800_000_000000),
     ]);
+
+    // Verify V2 redemption: 321.825M MIA -> ~547.1 STX
     expect(txReceipts[0].result).toBeOk(
       tupleCV({
-        uStx: uintCV(547_102500),
-        uMia: uintCV(321_825_000000),
-        miaV1: uintCV(0),
-        uMiaV2: uintCV(321_825_000000),
+        uStx: uintCV(547_102500),     // STX received
+        uMia: uintCV(321_825_000000), // total MIA burned
+        miaV1: uintCV(0),             // V1 amount burned
+        uMiaV2: uintCV(321_825_000000), // V2 amount burned
       })
     );
-    // nothing to redeem
-    expect(txReceipts[1].result).toBeErr(uintCV(13007));
-    // redeem v1 holder
+
+    // Second redemption should fail - nothing to redeem
+    expect(txReceipts[1].result).toBeErr(uintCV(13007)); // ERR_NOTHING_TO_REDEEM
+
+    // V1 redemption: 800M MIA -> 1360 STX
     expect(txReceipts[2].result).toBeOk(
       tupleCV({
-        uStx: uintCV(1360_000000),
-        uMia: uintCV(800_000_000000),
-        miaV1: uintCV(800_000),
-        uMiaV2: uintCV(0),
+        uStx: uintCV(1360_000000),    // STX received
+        uMia: uintCV(800_000_000000), // total MIA burned
+        miaV1: uintCV(800_000),       // V1 amount burned (in whole MIA)
+        uMiaV2: uintCV(0),            // V2 amount burned
       })
     );
-    expect(txReceipts[3].result).toBeErr(uintCV(2003)); // v1 balance not found (0 MIA)
-    expect(txReceipts[4].result).toBeErr(uintCV(13007)); // nothing to redeem (0 MIA)
+
+    // Convert to V2 should fail - no V1 balance left
+    expect(txReceipts[3].result).toBeErr(uintCV(2003));
+
+    // Third redemption should fail - nothing to redeem
+    expect(txReceipts[4].result).toBeErr(uintCV(13007)); // ERR_NOTHING_TO_REDEEM
   }, 120000);
 });
