@@ -8,23 +8,25 @@ import {
 } from "./clients/ccd013-burn-to-exit-mia-client";
 
 describe("CCD013 Burn to Exit MIA", () => {
-  it("user should redeem at 1700 STX / 1m MIA", async () => {
+  it("should allow users to redeem MIA at 1700 STX per 1M MIA ratio", async () => {
+    // Verify starting block height
     expect(simnet.blockHeight).toBe(3491156);
 
     let txReceipts: any;
 
+    // Step 1: Vote on the proposal
     txReceipts = simnet.mineBlock([
-      vote("SP39EH784WK8VYG0SXEVA0M81DGECRE25JYSZ5XSA"),
-      vote("SP1T91N2Y2TE5M937FE3R6DE0HGWD85SGCV50T95A"),
-      vote("SP18Z92ZT0GAB2JHD21CZ3KS1WPGNDJCYZS7CV3MD"), // not a holder
+      vote("SP39EH784WK8VYG0SXEVA0M81DGECRE25JYSZ5XSA"), // valid stacker
+      vote("SP1T91N2Y2TE5M937FE3R6DE0HGWD85SGCV50T95A"), // valid stacker
+      vote("SP18Z92ZT0GAB2JHD21CZ3KS1WPGNDJCYZS7CV3MD"), // not a stacker - should fail
     ]);
 
     expect(txReceipts[0].result).toBeOk(boolCV(true));
     expect(txReceipts[1].result).toBeOk(boolCV(true));
-    expect(txReceipts[2].result).toBeErr(uintCV(26003));
+    expect(txReceipts[2].result).toBeErr(uintCV(26003)); // ERR_NOTHING_STACKED
 
+    // Step 2: Execute the proposal via DAO signers
     txReceipts = simnet.mineBlock([
-      // execute
       directExecute("SP7DGES13508FHRWS1FB0J3SZA326FP6QRMB6JDE"),
       directExecute("SP3YYGCGX1B62CYAH4QX7PQE63YXG7RDTXD8BQHJQ"),
       directExecute("SPN4Y5QPGQA8882ZXW90ADC2DHYXMSTN8VAR8C3X"),
