@@ -1,3 +1,15 @@
+/**
+ * Stxer Simulation for CCIP-026 MiamiCoin Burn to Exit
+ *
+ * This simulation tests the full flow of:
+ * 1. Deploying the contracts
+ * 2. Voting on the proposal
+ * 3. Executing the proposal through the DAO
+ * 4. Redeeming MIA tokens for STX
+ *
+ * Run with: npm run test:stxer
+ */
+
 import {
   AnchorMode,
   PostConditionMode,
@@ -8,43 +20,55 @@ import {
 import { SimulationBuilder } from "stxer";
 import fs from "fs";
 
-const contract_name = "ccip026-miamicoin-burn-to-exit";
-const contract_name_redeem = "ccd013-burn-to-exit-mia";
-const deployer = "SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9";
-const contract_id = `${deployer}.${contract_name}`;
-const common_params = {
+// Contract configuration
+const CONTRACT_NAME_PROPOSAL = "ccip026-miamicoin-burn-to-exit";
+const CONTRACT_NAME_REDEEM = "ccd013-burn-to-exit-mia";
+const DEPLOYER = "SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9";
+const PROPOSAL_CONTRACT_ID = `${DEPLOYER}.${CONTRACT_NAME_PROPOSAL}`;
+
+// Common transaction parameters
+const COMMON_TX_PARAMS = {
   publicKey: "",
   postConditionMode: PostConditionMode.Allow,
   anchorMode: AnchorMode.Any,
   fee: 100,
 };
 
+/**
+ * Creates a vote transaction for the CCIP-026 proposal
+ */
 function vote(sender: string, nonce: number) {
   return {
-    contract_id,
+    contract_id: PROPOSAL_CONTRACT_ID,
     function_name: "vote-on-proposal",
     function_args: [boolCV(true)],
     nonce: nonce++,
     sender,
-    ...common_params,
+    ...COMMON_TX_PARAMS,
   };
 }
 
+/**
+ * Creates a direct execute transaction through the DAO
+ */
 function directExecute(sender: string, nonce: number) {
   return {
     contract_id:
       "SP8A9HZ3PKST0S42VM9523Z9NV42SZ026V4K39WH.ccd001-direct-execute",
     function_name: "direct-execute",
-    function_args: [principalCV(contract_id)],
+    function_args: [principalCV(PROPOSAL_CONTRACT_ID)],
     nonce: nonce++,
     sender,
-    ...common_params,
+    ...COMMON_TX_PARAMS,
   };
 }
 
+/**
+ * Creates a redeem transaction to exchange MIA for STX
+ */
 function redeem(sender: string, nonce: number, amount: number) {
   return {
-    contract_id: `${deployer}.${contract_name_redeem}`,
+    contract_id: `${DEPLOYER}.${CONTRACT_NAME_REDEEM}`,
     function_name: "redeem-mia",
     function_args: [uintCV(amount)],
     nonce: nonce++,
