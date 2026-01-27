@@ -350,17 +350,26 @@
   )
 )
 
-;; get block hash by height 
+;; Get block hash for historical state lookups (at-block)
+;; @param blockHeight - Stacks block height
+;; @returns (optional buff) - Block header hash, or none if not found
 (define-private (get-block-hash (blockHeight uint))
   (get-stacks-block-info? id-header-hash blockHeight)
 )
 
-;; CREDIT: ALEX math-fixed-point-16.clar
+;; MATH UTILITIES
+;; Credit: ALEX math-fixed-point-16.clar
 
+;; Scale up a value by VOTE_SCALE_FACTOR for precision
+;; @param a - Value to scale up
+;; @returns uint - Scaled value
 (define-private (scale-up (a uint))
   (* a VOTE_SCALE_FACTOR)
 )
 
+;; Scale down a value by VOTE_SCALE_FACTOR
+;; @param a - Value to scale down
+;; @returns uint - Unscaled value
 (define-private (scale-down (a uint))
   (/ a VOTE_SCALE_FACTOR)
 )
