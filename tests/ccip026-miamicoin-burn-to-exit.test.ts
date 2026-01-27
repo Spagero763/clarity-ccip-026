@@ -11,7 +11,21 @@ import {
 import { describe, expect, it } from "vitest";
 import { vote } from "./clients/ccip026-miamicoin-burn-to-exit-client";
 
+/**
+ * CCIP026 Core Tests
+ * 
+ * This test suite validates the core functionality of the CCIP-026 proposal contract.
+ * Tests cover authorization, metadata retrieval, vote period, and executability checks.
+ * 
+ * Uses Mainnet Execution Simulation (MXS) at block height 3,491,155.
+ */
 describe("CCIP026 Core", () => {
+  /**
+   * Test: Authorization Security
+   * 
+   * Verifies that only the DAO can execute the proposal.
+   * Direct execution attempts by voters should fail with ERR_UNAUTHORIZED.
+   */
   it("should not allow unauthorized users to execute proposal directly", async () => {
     let txReceipts: any;
     txReceipts = simnet.mineBlock([
