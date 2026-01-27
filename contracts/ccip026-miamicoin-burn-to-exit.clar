@@ -140,7 +140,6 @@
 
 ;; READ ONLY FUNCTIONS
 
-;; READ ONLY FUNCTIONS
 (define-read-only (is-executable)
   (let (
       (votingRecord (unwrap! (get-vote-totals) ERR_PANIC))
