@@ -195,6 +195,11 @@ describe("CCIP026 Core", () => {
     expect(isActiveAfter2.result).toBeBool(false);
   });
 
+  /**
+   * Test: Initial Vote Totals
+   * 
+   * Confirms that vote totals are zero before any votes are cast.
+   */
   it("should return empty vote totals initially", async () => {
     const miaVoteTotals = simnet.callReadOnlyFn(
       "ccip026-miamicoin-burn-to-exit",
