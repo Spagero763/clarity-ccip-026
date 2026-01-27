@@ -246,13 +246,18 @@
   )
 )
 
+;; Get voter information by user ID
+;; @param id - User ID from the user registry
+;; @returns (optional tuple) - User's vote choice and MIA voting power
 (define-read-only (get-voter-info (id uint))
   (map-get? UserVotes id)
 )
 
-;; MIA vote calculation
-;; returns (some uint) or (none)
-;; optionally scaled by VOTE_SCALE_FACTOR (10^6)
+;; Calculate a user's voting power based on MIA stacked in cycles 82 and 83
+;; The vote is calculated as the average of stacked amounts in both cycles
+;; @param userId - User ID from the user registry
+;; @param scaled - If true, returns value scaled by VOTE_SCALE_FACTOR (10^16)
+;; @returns (optional uint) - Voting power, or none if user has no stacking history
 (define-read-only (get-mia-vote
     (userId uint)
     (scaled bool)
