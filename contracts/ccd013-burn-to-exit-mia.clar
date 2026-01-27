@@ -159,7 +159,7 @@
         burn-mia-v1 redemptionV1InMia userAddress
       ))
     )
-    ;; burn MIA tokens v2   
+    ;; Burn V2 tokens if any
     (and
       (> redemptionAmountUMiaV2 u0)
       (try! (contract-call?
@@ -167,29 +167,30 @@
         redemptionAmountUMiaV2 userAddress
       ))
     )
-    ;; transfer STX
+    ;; Transfer STX from treasury to user
     (try! (contract-call?
       'SP8A9HZ3PKST0S42VM9523Z9NV42SZ026V4K39WH.ccd002-treasury-mia-rewards-v3
       withdraw-stx redemptionAmountUStx userAddress
     ))
-    ;; update redemption claims
+    ;; Update global redemption totals
     (var-set totalRedeemed (+ (var-get totalRedeemed) redemptionTotalUMia))
     (var-set totalTransferred (+ (var-get totalTransferred) redemptionAmountUStx))
+    ;; Update user's cumulative redemption record
     (map-set RedemptionClaims userAddress {
       uMia: (+ (get uMia redemptionClaimed) redemptionTotalUMia),
       uStx: (+ (get uStx redemptionClaimed) redemptionAmountUStx),
     })
-    ;; print redemption info
+    ;; Emit contract-level redemption event
     (print {
       notification: "contract-redemption",
       payload: (get-redemption-info),
     })
-    ;; print user redemption info
+    ;; Emit user-level redemption event
     (print {
       notification: "user-redemption",
       payload: (get-user-redemption-info userAddress),
     })
-    ;; return redemption amount
+    ;; Return detailed redemption results
     (ok {
       uStx: redemptionAmountUStx,
       uMia: redemptionTotalUMia,
