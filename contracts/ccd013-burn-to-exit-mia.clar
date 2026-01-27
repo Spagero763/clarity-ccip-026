@@ -70,7 +70,7 @@
     ;; enable redemptions
     (var-set redemptionsEnabled true)
     (ok (print {
-      notification: "intialize-contract",
+      notification: "initialize-contract",
       payload: (get-redemption-info),
     }))
   )
