@@ -91,30 +91,37 @@ function convertToV2(sender: string, nonce: number) {
   };
 }
 
+/**
+ * Main simulation function that builds and runs the full CCIP-026 flow
+ * @param block_height - Stacks block height to fork from
+ */
 function main(block_height: number) {
   return (
     SimulationBuilder.new()
       .useBlockHeight(block_height)
+      // Deploy redemption contract first (dependency)
       .addContractDeploy({
-        contract_name: contract_name_redeem,
+        contract_name: CONTRACT_NAME_REDEEM,
         source_code: fs.readFileSync(
-          `./contracts/${contract_name_redeem}.clar`,
+          `./contracts/${CONTRACT_NAME_REDEEM}.clar`,
           "utf8"
         ),
-        deployer,
+        deployer: DEPLOYER,
       })
+      // Deploy proposal contract
       .addContractDeploy({
-        contract_name,
+        contract_name: CONTRACT_NAME_PROPOSAL,
         source_code: fs.readFileSync(
-          `./contracts/${contract_name}.clar`,
+          `./contracts/${CONTRACT_NAME_PROPOSAL}.clar`,
           "utf8"
         ),
-        deployer,
+        deployer: DEPLOYER,
       })
+      // Voting phase
       .addContractCall(vote("SP39EH784WK8VYG0SXEVA0M81DGECRE25JYSZ5XSA", 74))
       .addContractCall(vote("SP1T91N2Y2TE5M937FE3R6DE0HGWD85SGCV50T95A", 249))
       .addContractCall(vote("SP18Z92ZT0GAB2JHD21CZ3KS1WPGNDJCYZS7CV3MD", 529))
-      // execute
+      // DAO execution phase (requires 3 signers)
       .addContractCall(
         directExecute("SP7DGES13508FHRWS1FB0J3SZA326FP6QRMB6JDE", 124)
       )
@@ -124,24 +131,23 @@ function main(block_height: number) {
       .addContractCall(
         directExecute("SPN4Y5QPGQA8882ZXW90ADC2DHYXMSTN8VAR8C3X", 851)
       )
-
-      // redeem
+      // Redemption phase
       .addContractCall(
         redeem("SP39EH784WK8VYG0SXEVA0M81DGECRE25JYSZ5XSA", 75, 321_825_000000)
       )
       .addContractCall(
-        // redeem more than user owns (0 MIA)
+        // Attempt to redeem with 0 balance - should fail
         redeem("SP39EH784WK8VYG0SXEVA0M81DGECRE25JYSZ5XSA", 76, 321_825_000000)
       )
       .addContractCall(
-        // redeeem more than owned (10.08m MIA), redeem more than max per tx (10m MIA)
+        // Attempt to redeem more than max per tx (10m MIA limit)
         redeem(
           "SP3BSWJTYBDJGDGZ54T4T0NMBGQ6BBFZCWD44VMH9",
           453,
           11_000_000_000000
         )
       )
-      // redeem v1
+      // Redeem V1 tokens
       .addContractCall(
         redeem("SP22HP2QFA16AAP62HJWD85AKMYJ5AYRTH7TBT9MX", 10, 800_000_000000)
       )
@@ -151,8 +157,9 @@ function main(block_height: number) {
   );
 }
 
-const block_height_empty = 3425439;
-const block_height_31k_stx = 3491155;
+// Block height configurations for testing
+const BLOCK_HEIGHT_EMPTY = 3425439;       // Empty treasury state
+const BLOCK_HEIGHT_31K_STX = 3491155;     // ~31k STX in treasury
 
 //main(block_height_empty).catch(console.error);
 main(block_height_31k_stx).catch(console.error);
