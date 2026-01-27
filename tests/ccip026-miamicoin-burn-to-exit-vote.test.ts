@@ -139,21 +139,21 @@ describe("CCIP026 Vote", () => {
     checkIsExecutable(responseErrorCV(uintCV(26007))); // vote failed
   });
 
-  it("should count user votes - no-yes", async () => {
+  it("should aggregate votes correctly - no then yes scenario", async () => {
     let txReceipts: any;
     txReceipts = simnet.mineBlock([
-      vote("SP39EH784WK8VYG0SXEVA0M81DGECRE25JYSZ5XSA", false),
-      vote("SP1T91N2Y2TE5M937FE3R6DE0HGWD85SGCV50T95A", true),
+      vote("SP39EH784WK8VYG0SXEVA0M81DGECRE25JYSZ5XSA", false), // large stacker votes no
+      vote("SP1T91N2Y2TE5M937FE3R6DE0HGWD85SGCV50T95A", true),  // smaller stacker votes yes
     ]);
     expect(txReceipts[0].result).toBeOk(boolCV(true));
     expect(txReceipts[1].result).toBeOk(boolCV(true));
 
-    // check votes
+    // Verify vote totals: yes has smaller amount, no has larger amount
     checkVotes(2086372000000n, 1n, 144479012000000n, 1n);
-    checkIsExecutable(responseErrorCV(uintCV(26007))); // vote failed
+    checkIsExecutable(responseErrorCV(uintCV(26007))); // ERR_VOTE_FAILED (no > yes)
   });
 
-  it("should count user votes - yes-yes", async () => {
+  it("should pass proposal when both stackers vote yes", async () => {
     let txReceipts: any;
     txReceipts = simnet.mineBlock([
       vote("SP39EH784WK8VYG0SXEVA0M81DGECRE25JYSZ5XSA", true),
@@ -162,12 +162,12 @@ describe("CCIP026 Vote", () => {
     expect(txReceipts[0].result).toBeOk(boolCV(true));
     expect(txReceipts[1].result).toBeOk(boolCV(true));
 
-    // check votes
+    // Verify combined vote totals
     checkVotes(146565384000000n, 2n, 0n, 0n);
-    checkIsExecutable(responseOkCV(boolCV(true)));
+    checkIsExecutable(responseOkCV(boolCV(true))); // Proposal passes!
   });
 
-  it("should count user votes - no-no", async () => {
+  it("should fail proposal when both stackers vote no", async () => {
     let txReceipts: any;
     txReceipts = simnet.mineBlock([
       vote("SP39EH784WK8VYG0SXEVA0M81DGECRE25JYSZ5XSA", false),
@@ -176,8 +176,8 @@ describe("CCIP026 Vote", () => {
     expect(txReceipts[0].result).toBeOk(boolCV(true));
     expect(txReceipts[1].result).toBeOk(boolCV(true));
 
-    // check votes
+    // Verify all votes are no
     checkVotes(0n, 0n, 146565384000000n, 2n);
-    checkIsExecutable(responseErrorCV(uintCV(26007))); // vote failed
+    checkIsExecutable(responseErrorCV(uintCV(26007))); // ERR_VOTE_FAILED
   });
 });
