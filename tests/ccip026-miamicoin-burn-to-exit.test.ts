@@ -102,7 +102,7 @@ describe("CCIP026 Core", () => {
     );
   });
 
-  it("should check if vote is active initially", async () => {
+  it("should return vote as active immediately after deployment", async () => {
     const isActive = simnet.callReadOnlyFn(
       "ccip026-miamicoin-burn-to-exit",
       "is-vote-active",
@@ -110,11 +110,11 @@ describe("CCIP026 Core", () => {
       "SP1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRCBGD7R"
     );
 
-    // Should return a boolean
+    // Vote should be active upon deployment
     expect(isActive.result).toBeBool(true);
   });
 
-  it("should deactive vote after voting period", async () => {
+  it("should deactivate vote after voting period ends", async () => {
     const isActive = simnet.callReadOnlyFn(
       "ccip026-miamicoin-burn-to-exit",
       "is-vote-active",
@@ -124,7 +124,7 @@ describe("CCIP026 Core", () => {
 
     expect(isActive.result).toBeBool(true);
 
-    // Advance to the end of the voting period
+    // Advance to the end of the voting period (2016 blocks)
     expect(simnet.blockHeight).toBe(3491156);
     simnet.mineEmptyBlocks(2016);
     expect(simnet.blockHeight).toBe(3493172);
