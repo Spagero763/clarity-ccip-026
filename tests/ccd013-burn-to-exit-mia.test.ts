@@ -27,6 +27,16 @@ import {
  * - SP18Z92ZT...: Non-stacker (for failure tests)
  */
 describe("CCD013 Burn to Exit MIA", () => {
+  /**
+   * Test: Complete Redemption Flow
+   * 
+   * This is the main integration test that validates:
+   * - Voting on CCIP-026 proposal by eligible stackers
+   * - DAO execution with multi-sig approval
+   * - V2 token redemption
+   * - V1 token redemption (auto-converts to V2)
+   * - Error handling for double redemption attempts
+   */
   it("should allow users to redeem MIA at 1700 STX per 1M MIA ratio", async () => {
     // Verify starting block height
     expect(simnet.blockHeight).toBe(3491156);
