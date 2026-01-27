@@ -12,6 +12,7 @@
 
 ;; ERRORS
 
+;; Error codes - 26xxx series for CCIP-026
 (define-constant ERR_PANIC (err u26000))
 (define-constant ERR_SAVING_VOTE (err u26001))
 (define-constant ERR_VOTED_ALREADY (err u26002))
@@ -23,17 +24,23 @@
 
 ;; CONSTANTS
 
+;; Contract reference
 (define-constant SELF (as-contract tx-sender))
+
+;; Proposal metadata
 (define-constant CCIP_026 {
   name: "MiamiCoin Burn to Exit",
   link: "https://github.com/citycoins/governance/blob/eea941ea40c16428b4806d1808e7dab9fc095e0a/ccips/ccip-026/ccip-026-miamicoin-burn-to-exit.md",
   hash: "",
 })
 
-(define-constant VOTE_SCALE_FACTOR (pow u10 u16)) ;; 16 decimal places
-(define-constant VOTE_LENGTH u2016) ;; approximately 2 weeks in Bitcoin blocks
+;; Vote scaling - 16 decimal places for precision
+(define-constant VOTE_SCALE_FACTOR (pow u10 u16))
 
-;; set city ID
+;; Vote duration - approximately 2 weeks in Bitcoin blocks
+(define-constant VOTE_LENGTH u2016)
+
+;; City ID for MIA
 (define-constant MIA_ID (default-to u1
   (contract-call? 'SP8A9HZ3PKST0S42VM9523Z9NV42SZ026V4K39WH.ccd004-city-registry
     get-city-id "mia"
@@ -41,12 +48,17 @@
 
 ;; DATA VARS
 
+;; Whether voting is currently active
 (define-data-var voteActive bool true)
+
+;; Vote period boundaries
 (define-data-var voteStart uint u0)
 (define-data-var voteEnd uint u0)
-;; start the vote when deployed
+
+;; Initialize vote period when deployed
 (var-set voteStart burn-block-height)
 (var-set voteEnd (+ burn-block-height VOTE_LENGTH))
+
 ;; DATA MAPS
 
 (define-map CityVotes
