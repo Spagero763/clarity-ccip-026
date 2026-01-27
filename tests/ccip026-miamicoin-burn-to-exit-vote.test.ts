@@ -91,6 +91,12 @@ describe("CCIP026 Vote", () => {
     checkIsExecutable(responseErrorCV(uintCV(26007))); // ERR_VOTE_FAILED
   });
 
+  /**
+   * Test: Duplicate Vote Prevention
+   * 
+   * Ensures that users cannot vote multiple times with the same choice.
+   * ERR_VOTED_ALREADY (26002) should be returned on duplicate attempts.
+   */
   it("should reject duplicate votes with the same choice", async () => {
     let txReceipts: any;
 
