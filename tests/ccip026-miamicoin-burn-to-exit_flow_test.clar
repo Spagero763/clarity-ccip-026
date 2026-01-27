@@ -1,16 +1,22 @@
-;; @name vote and redeem
+;; Integration test for CCIP-026 voting and execution flow
+;; Tests the complete lifecycle from voting to DAO execution
+
+;; @name Vote and execute proposal
 (define-public (test-vote)
   (begin
+    ;; Step 1: First stacker votes yes
     ;; @caller 'SP39EH784WK8VYG0SXEVA0M81DGECRE25JYSZ5XSA
     (unwrap!
       (contract-call? .ccip026-miamicoin-burn-to-exit vote-on-proposal true)
       (err "vote failed")
     )
+    ;; Step 2: Second stacker votes yes
     ;; @caller 'SP1T91N2Y2TE5M937FE3R6DE0HGWD85SGCV50T95A
     (unwrap!
       (contract-call? .ccip026-miamicoin-burn-to-exit vote-on-proposal true)
       (err "vote failed")
     )
+    ;; Step 3: DAO signer executes the proposal
     ;; @caller 'SP7DGES13508FHRWS1FB0J3SZA326FP6QRMB6JDE
     ;; @type-hints trait_reference
     (unwrap!
