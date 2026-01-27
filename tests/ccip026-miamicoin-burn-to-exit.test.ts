@@ -46,7 +46,7 @@ describe("CCIP026 Core", () => {
     );
   });
 
-  it("should return correct vote period info", async () => {
+  it("should return correct vote period configuration", async () => {
     const votePeriod = simnet.callReadOnlyFn(
       "ccip026-miamicoin-burn-to-exit",
       "get-vote-period",
@@ -57,13 +57,13 @@ describe("CCIP026 Core", () => {
     expect(votePeriod.result).toBeSome(
       tupleCV({
         endBlock: uintCV(916481),
-        length: uintCV(2016),
+        length: uintCV(2016),     // 2 weeks in Bitcoin blocks
         startBlock: uintCV(914465),
       })
     );
   });
 
-  it("should return voter info after voting", async () => {
+  it("should track voter info correctly after voting", async () => {
     // Get user ID first
     const userId = simnet.callReadOnlyFn(
       "SP8A9HZ3PKST0S42VM9523Z9NV42SZ026V4K39WH.ccd003-user-registry",
@@ -73,7 +73,7 @@ describe("CCIP026 Core", () => {
     );
     expect(userId.result).toBeSome(uintCV(187));
 
-    // Check voter info before voting
+    // Check voter info before voting - should be none
     let voterInfo = simnet.callReadOnlyFn(
       "ccip026-miamicoin-burn-to-exit",
       "get-voter-info",
