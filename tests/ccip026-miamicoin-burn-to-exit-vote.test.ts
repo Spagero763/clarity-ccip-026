@@ -69,23 +69,23 @@ describe("CCIP026 Vote", () => {
     checkIsExecutable(responseErrorCV(uintCV(26007))); // ERR_VOTE_FAILED
   });
 
-  it("should not allow voting twice with same choice", async () => {
+  it("should reject duplicate votes with the same choice", async () => {
     let txReceipts: any;
 
-    // First vote
+    // First vote - should succeed
     txReceipts = simnet.mineBlock([
       vote("SP39EH784WK8VYG0SXEVA0M81DGECRE25JYSZ5XSA", true),
     ]);
     expect(txReceipts[0].result).toBeOk(boolCV(true));
 
-    // Try to vote with same choice again
+    // Try to vote with same choice again - should fail
     txReceipts = simnet.mineBlock([
       vote("SP39EH784WK8VYG0SXEVA0M81DGECRE25JYSZ5XSA", true),
     ]);
     expect(txReceipts[0].result).toBeErr(uintCV(26002)); // ERR_VOTED_ALREADY
   });
 
-  it("should allow changing vote from yes to no", async () => {
+  it("should allow users to change their vote from yes to no", async () => {
     let txReceipts: any;
 
     // First vote yes
@@ -94,6 +94,7 @@ describe("CCIP026 Vote", () => {
     ]);
     expect(txReceipts[0].result).toBeOk(boolCV(true));
     checkVotes(2086372000000n, 1n, 0n, 0n);
+
     // Change vote to no
     txReceipts = simnet.mineBlock([
       vote("SP1T91N2Y2TE5M937FE3R6DE0HGWD85SGCV50T95A", false),
