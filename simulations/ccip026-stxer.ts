@@ -21,9 +21,13 @@ import { SimulationBuilder } from "stxer";
 import fs from "fs";
 
 // Contract configuration
+/** Name of the CCIP-026 proposal contract */
 const CONTRACT_NAME_PROPOSAL = "ccip026-miamicoin-burn-to-exit";
+/** Name of the CCD013 redemption extension contract */
 const CONTRACT_NAME_REDEEM = "ccd013-burn-to-exit-mia";
+/** Deployer principal address for the contracts */
 const DEPLOYER = "SP2PABAF9FTAJYNFZH93XENAJ8FVY99RRM50D2JG9";
+/** Full contract identifier for the proposal */
 const PROPOSAL_CONTRACT_ID = `${DEPLOYER}.${CONTRACT_NAME_PROPOSAL}`;
 
 // Common transaction parameters
