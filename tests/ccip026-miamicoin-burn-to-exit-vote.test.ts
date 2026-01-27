@@ -113,6 +113,12 @@ describe("CCIP026 Vote", () => {
     expect(txReceipts[0].result).toBeErr(uintCV(26002)); // ERR_VOTED_ALREADY
   });
 
+  /**
+   * Test: Vote Change - Yes to No
+   * 
+   * Verifies that users can change their vote from yes to no.
+   * The vote totals should be properly updated when a vote is changed.
+   */
   it("should allow users to change their vote from yes to no", async () => {
     let txReceipts: any;
 
