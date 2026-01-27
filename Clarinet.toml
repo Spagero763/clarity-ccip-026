@@ -1,7 +1,7 @@
 [project]
 name = "clarity-ccip-026"
-description = ""
-authors = []
+description = "CCIP-026 MiamiCoin Burn to Exit - Voting and Redemption Contracts"
+authors = ["CityCoins Contributors"]
 telemetry = false
 cache_dir = "./.cache"
 
