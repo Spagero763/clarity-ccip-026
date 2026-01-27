@@ -11,8 +11,6 @@ import {
 } from "@stacks/transactions";
 import { describe, expect, it } from "vitest";
 import { vote } from "./clients/ccip026-miamicoin-burn-to-exit-client";
-import { stringAscii } from "@stacks/transactions/dist/cl";
-import { U } from "vitest/dist/chunks/environment.d.cL3nLXbE.js";
 
 describe("CCIP026 Core", () => {
   it("should not allow users to execute", async () => {
