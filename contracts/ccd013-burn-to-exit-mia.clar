@@ -49,6 +49,9 @@
 
 ;; PUBLIC FUNCTIONS
 
+;; Check if caller is the DAO or an enabled extension
+;; Used for authorization checks on protected functions
+;; @returns (response bool uint) - ok(true) if authorized
 (define-public (is-dao-or-extension)
   (ok (asserts!
     (or
@@ -61,6 +64,10 @@
   ))
 )
 
+;; Callback function required by extension trait
+;; @param sender - The principal that initiated the callback
+;; @param memo - Optional memo buffer
+;; @returns (response bool uint) - always ok(true)
 (define-public (callback
     (sender principal)
     (memo (buff 34))
@@ -68,12 +75,15 @@
   (ok true)
 )
 
-;; initialize contract after deployment to start redemptions
+;; Initialize the redemption contract
+;; Revokes STX delegation from the treasury and enables redemptions
+;; Can only be called through the DAO after proposal execution
+;; @returns (response tuple uint) - Redemption info on success
 (define-public (initialize)
   (begin
-    ;; check if sender is DAO or extension
+    ;; Verify caller is DAO or extension
     (try! (is-dao-or-extension))
-    ;; revoke delegation
+    ;; Revoke any existing delegation to make STX available
     (try! (contract-call?
       'SP8A9HZ3PKST0S42VM9523Z9NV42SZ026V4K39WH.ccd002-treasury-mia-rewards-v3
       revoke-delegate-stx
