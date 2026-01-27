@@ -1,4 +1,4 @@
-import { tx } from "@hirosystems/clarinet-sdk";
+import { tx } from "@stacks/clarinet-sdk";
 import { boolCV } from "@stacks/transactions";
 
 export const vote = (sender: string, voteValue: boolean) => {
