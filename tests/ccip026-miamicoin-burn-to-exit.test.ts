@@ -1,7 +1,6 @@
 import { tx } from "@stacks/clarinet-sdk";
 import {
   boolCV,
-  noneCV,
   principalCV,
   SomeCV,
   stringAsciiCV,
