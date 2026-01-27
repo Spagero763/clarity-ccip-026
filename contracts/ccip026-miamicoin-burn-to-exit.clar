@@ -186,6 +186,8 @@
   )
 )
 
+;; Check if the vote is currently active (within vote period)
+;; @returns bool - true if current block is within vote period
 (define-read-only (is-vote-active)
   (if (and (>= burn-block-height (var-get voteStart)) (<= burn-block-height (var-get voteEnd)))
     true
@@ -193,10 +195,14 @@
   )
 )
 
+;; Get proposal metadata (name, link, hash)
+;; @returns (optional tuple) - proposal information
 (define-read-only (get-proposal-info)
   (some CCIP_026)
 )
 
+;; Get the vote period configuration
+;; @returns (optional tuple) - start block, end block, and length
 (define-read-only (get-vote-period)
   (some {
     startBlock: (var-get voteStart),
@@ -205,10 +211,14 @@
   })
 )
 
+;; Get MIA vote totals (raw map data)
+;; @returns (optional tuple) - vote totals for MIA city
 (define-read-only (get-vote-total-mia)
   (map-get? CityVotes MIA_ID)
 )
 
+;; Get MIA vote totals with default values if no votes exist
+;; @returns tuple - vote totals (defaults to zeros)
 (define-read-only (get-vote-total-mia-or-default)
   (default-to {
     totalAmountYes: u0,
@@ -220,6 +230,8 @@
   )
 )
 
+;; Get aggregated vote totals
+;; @returns (optional tuple) - MIA record and combined totals
 (define-read-only (get-vote-totals)
   (let ((miaRecord (get-vote-total-mia-or-default)))
     (some {
