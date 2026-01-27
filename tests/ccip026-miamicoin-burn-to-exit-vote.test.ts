@@ -166,6 +166,12 @@ describe("CCIP026 Vote", () => {
     expect(miaVoteUnscaled.result).toBeSome(uintCV(444375000000));
   });
 
+  /**
+   * Test: Vote Counting - Yes vs No Scenario
+   * 
+   * When a large stacker votes yes and a smaller stacker votes no,
+   * the proposal should still fail because yes votes don't exceed no votes.
+   */
   it("should count user votes - yes-no", async () => {
     let txReceipts: any;
     txReceipts = simnet.mineBlock([
