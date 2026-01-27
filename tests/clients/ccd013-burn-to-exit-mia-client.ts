@@ -1,4 +1,4 @@
-import { tx } from "@hirosystems/clarinet-sdk";
+import { tx } from "@stacks/clarinet-sdk";
 import { contractPrincipalCV, uintCV } from "@stacks/transactions";
 import { vote as vote026 } from "./ccip026-miamicoin-burn-to-exit-client";
 
