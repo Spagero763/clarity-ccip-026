@@ -202,27 +202,38 @@
 
 ;; READ ONLY FUNCTIONS
 
+;; Check if redemptions are currently enabled
+;; @returns bool - true if redemptions are enabled
 (define-read-only (is-redemption-enabled)
   (var-get redemptionsEnabled)
 )
 
+;; Get the current STX balance available in the treasury for redemptions
+;; @returns uint - STX balance in micro units
 (define-read-only (get-redemption-current-balance)
   (stx-get-balance 'SP8A9HZ3PKST0S42VM9523Z9NV42SZ026V4K39WH.ccd002-treasury-mia-rewards-v3)
 )
 
+;; Get the redemption ratio (STX per 1M MIA)
+;; @returns uint - ratio value (1700 = 0.0017 STX per MIA)
 (define-read-only (get-redemption-ratio)
   REDEMPTION_RATIO
 )
 
+;; Get total MIA redeemed across all users
+;; @returns uint - total MIA in micro units
 (define-read-only (get-total-redeemed)
   (var-get totalRedeemed)
 )
 
+;; Get total STX transferred to users through redemptions
+;; @returns uint - total STX in micro units
 (define-read-only (get-total-transferred)
   (var-get totalTransferred)
 )
 
-;; aggregate all exposed vars above
+;; Get aggregated redemption contract info
+;; @returns tuple - all redemption-related state variables
 (define-read-only (get-redemption-info)
   {
     redemptionsEnabled: (is-redemption-enabled),
@@ -233,10 +244,16 @@
   }
 )
 
+;; Get a user's cumulative redemption history
+;; @param user - principal to lookup
+;; @returns tuple - contains optional redemption claims record
 (define-read-only (get-user-redemption-info (user principal))
   { totalRedeemed: (map-get? RedemptionClaims user) }
 )
 
+;; Calculate STX payout for a given MIA balance
+;; @param balance - MIA amount in micro units
+;; @returns (response uint uint) - STX amount, or error if insufficient funds
 (define-read-only (get-redemption-for-balance (balance uint))
   (let (
       (redemptionAmountScaled (* REDEMPTION_RATIO balance))
@@ -244,9 +261,9 @@
       (contractCurrentBalance (get-redemption-current-balance))
     )
     (if (< redemptionAmount contractCurrentBalance)
-      ;; if redemption amount is less than contract balance, return redemption amount
+      ;; Sufficient funds available - return calculated amount
       (ok redemptionAmount)
-      ;; if redemption amount is greater than contract balance, thrown an error
+      ;; Insufficient funds - return error
       ERR_NOT_ENOUGH_FUNDS_IN_CONTRACT
     )
   )
