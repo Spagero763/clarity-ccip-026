@@ -162,8 +162,18 @@ function main(block_height: number) {
 }
 
 // Block height configurations for testing
-const BLOCK_HEIGHT_EMPTY = 3425439;       // Empty treasury state
-const BLOCK_HEIGHT_31K_STX = 3491155;     // ~31k STX in treasury
+/**
+ * Block height with empty treasury - useful for testing edge cases
+ * At this point, no STX is available for redemption
+ */
+const BLOCK_HEIGHT_EMPTY = 3425439;
+
+/**
+ * Block height with ~31,039 STX in treasury
+ * This is the recommended height for testing redemption flow
+ * Corresponds to mainnet state suitable for MXS testing
+ */
+const BLOCK_HEIGHT_31K_STX = 3491155;
 
 // Run simulation with treasury containing ~31k STX
 // Uncomment the line below to test with empty treasury:
