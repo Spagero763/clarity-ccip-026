@@ -1,3 +1,10 @@
+;; Title: CCIP-026 MiamiCoin Burn to Exit
+;; Version: 1.0.0
+;; Summary: A proposal contract for CCIP-026 that enables MIA token holders to vote on the burn-to-exit mechanism.
+;; Description: This contract implements voting functionality for the CCIP-026 proposal. Users who have stacked
+;;   MIA tokens during cycles 82 and 83 can vote on whether to enable the burn-to-exit redemption mechanism.
+;;   Once the vote passes, the ccd013-burn-to-exit-mia extension is enabled in the DAO.
+
 ;; TRAITS
 
 (impl-trait 'SP8A9HZ3PKST0S42VM9523Z9NV42SZ026V4K39WH.proposal-trait.proposal-trait)
