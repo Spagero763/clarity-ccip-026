@@ -153,6 +153,13 @@ describe("CCIP026 Core", () => {
     expect(isActive.result).toBeBool(true);
   });
 
+  /**
+   * Test: Vote Period Expiration
+   * 
+   * Validates that is-vote-active correctly transitions to false
+   * after the 2,016 block voting period ends.
+   * Mines blocks to simulate time passing.
+   */
   it("should deactivate vote after voting period ends", async () => {
     const isActive = simnet.callReadOnlyFn(
       "ccip026-miamicoin-burn-to-exit",
