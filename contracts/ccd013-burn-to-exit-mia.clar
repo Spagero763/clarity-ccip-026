@@ -88,7 +88,7 @@
       'SP8A9HZ3PKST0S42VM9523Z9NV42SZ026V4K39WH.ccd002-treasury-mia-rewards-v3
       revoke-delegate-stx
     ))
-    ;; enable redemptions
+    ;; Enable redemptions after delegation is revoked
     (var-set redemptionsEnabled true)
     (ok (print {
       notification: "initialize-contract",
@@ -97,9 +97,13 @@
   )
 )
 
+;; Redeem MIA tokens for STX from the treasury
+;; Burns the user's MIA tokens (V1 and/or V2) and transfers STX at the redemption ratio
+;; @param amountUMia - Amount of MIA to redeem in micro units (1 MIA = 1,000,000 uMIA)
+;; @returns (response tuple uint) - Redemption details (STX received, MIA burned)
 (define-public (redeem-mia (amountUMia uint))
   (let (
-      ;; balances for user
+      ;; Get user's V1 and V2 MIA balances
       (userAddress tx-sender)
       (balanceV1 (unwrap!
         (contract-call? 'SP466FNC0P7JWTNM2R9T199QRZN1MYEDTAR0KP27.miamicoin-token
@@ -114,7 +118,7 @@
         )
         ERR_BALANCE_NOT_FOUND
       ))
-      ;; previous redemptions
+      ;; Get previous redemption totals for this user
       (redemptionClaimed (default-to {
         uMia: u0,
         uStx: u0,
