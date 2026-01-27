@@ -294,7 +294,12 @@
 
 ;; PRIVATE FUNCTIONS
 
-;; update city vote map
+;; Update the CityVotes map with a new vote or changed vote
+;; Handles both new votes and vote changes (yes->no or no->yes)
+;; @param cityId - City identifier (MIA = 1)
+;; @param voteAmount - Voting power to add/subtract
+;; @param vote - true for yes, false for no
+;; @param changedVote - true if user is changing their previous vote
 (define-private (update-city-votes
     (cityId uint)
     (voteAmount uint)
@@ -309,11 +314,10 @@
     }
       (map-get? CityVotes cityId)
     )))
-    ;; do not record if amount is 0
+    ;; Skip if vote amount is 0
     (if (> voteAmount u0)
-      ;; handle vote
       (if vote
-        ;; handle yes vote
+        ;; YES vote: add to yes totals, subtract from no if changing vote
         (map-set CityVotes cityId {
           totalAmountYes: (+ voteAmount (get totalAmountYes cityRecord)),
           totalVotesYes: (+ u1 (get totalVotesYes cityRecord)),
@@ -326,7 +330,7 @@
             (get totalVotesNo cityRecord)
           ),
         })
-        ;; handle no vote
+        ;; NO vote: add to no totals, subtract from yes if changing vote
         (map-set CityVotes cityId {
           totalAmountYes: (if changedVote
             (- (get totalAmountYes cityRecord) voteAmount)
