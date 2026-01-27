@@ -160,7 +160,7 @@
         (update-city-votes MIA_ID miaVoteAmount vote false)
       )
     )
-    ;; print voter info
+    ;; Emit event with voter information
     (print {
       notification: "vote-on-ccip-026",
       payload: (get-voter-info voterId),
@@ -171,16 +171,17 @@
 
 ;; READ ONLY FUNCTIONS
 
+;; Check if the proposal has passed and can be executed
+;; @returns (response bool uint) - ok(true) if executable, err(26007) if vote failed
 (define-read-only (is-executable)
   (let (
       (votingRecord (unwrap! (get-vote-totals) ERR_PANIC))
       (voteTotals (get totals votingRecord))
     )
-    ;; check that the yes total is more than no total, implies that there is at least one vote
+    ;; Proposal passes if yes votes > no votes (requires at least one vote)
     (asserts! (> (get totalVotesYes voteTotals) (get totalVotesNo voteTotals))
       ERR_VOTE_FAILED
     )
-    ;; allow execution
     (ok true)
   )
 )
