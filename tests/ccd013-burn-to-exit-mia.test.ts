@@ -7,6 +7,25 @@ import {
   vote,
 } from "./clients/ccd013-burn-to-exit-mia-client";
 
+/**
+ * CCD013 Burn to Exit MIA Tests
+ * 
+ * This test suite validates the MiamiCoin redemption mechanism
+ * using Mainnet Execution Simulation (MXS) at block height 3,491,155.
+ * 
+ * Redemption Ratio: 1,700 STX per 1,000,000 MIA (0.0017 STX per MIA)
+ * Treasury Balance: ~31,039 STX available for redemption
+ * 
+ * Test Flow:
+ * 1. Vote on CCIP-026 proposal
+ * 2. Execute via DAO signers (3 approvals needed)
+ * 3. Test redemption scenarios for V1 and V2 tokens
+ * 
+ * Key Test Addresses:
+ * - SP39EH784...: Large MIA stacker (V2 holder)
+ * - SP22HP2QF...: V1 token holder
+ * - SP18Z92ZT...: Non-stacker (for failure tests)
+ */
 describe("CCD013 Burn to Exit MIA", () => {
   it("should allow users to redeem MIA at 1700 STX per 1M MIA ratio", async () => {
     // Verify starting block height
