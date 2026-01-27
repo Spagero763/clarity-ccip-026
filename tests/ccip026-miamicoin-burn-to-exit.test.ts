@@ -90,6 +90,13 @@ describe("CCIP026 Core", () => {
     );
   });
 
+  /**
+   * Test: Voter Information Tracking
+   * 
+   * Validates that get-voter-info correctly tracks:
+   * - Returns none before voting
+   * - Returns vote details after voting (MIA amount and vote choice)
+   */
   it("should track voter info correctly after voting", async () => {
     // Get user ID first
     const userId = simnet.callReadOnlyFn(
