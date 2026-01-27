@@ -161,5 +161,7 @@ function main(block_height: number) {
 const BLOCK_HEIGHT_EMPTY = 3425439;       // Empty treasury state
 const BLOCK_HEIGHT_31K_STX = 3491155;     // ~31k STX in treasury
 
-//main(block_height_empty).catch(console.error);
-main(block_height_31k_stx).catch(console.error);
+// Run simulation with treasury containing ~31k STX
+// Uncomment the line below to test with empty treasury:
+// main(BLOCK_HEIGHT_EMPTY).catch(console.error);
+main(BLOCK_HEIGHT_31K_STX).catch(console.error);
