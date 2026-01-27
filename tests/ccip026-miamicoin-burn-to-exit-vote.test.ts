@@ -74,6 +74,12 @@ const checkIsExecutable = (expected: ResponseCV) => {
 };
 
 describe("CCIP026 Vote", () => {
+  /**
+   * Test: Voter Eligibility Validation
+   * 
+   * Verifies that only registered stackers can vote on the proposal.
+   * Non-stackers and unregistered users should be rejected with appropriate errors.
+   */
   it("should reject votes from non-stackers and unregistered users", async () => {
     let txReceipts: any;
     txReceipts = simnet.mineBlock([
