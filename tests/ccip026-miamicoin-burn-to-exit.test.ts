@@ -136,6 +136,11 @@ describe("CCIP026 Core", () => {
     );
   });
 
+  /**
+   * Test: Vote Active Status on Deployment
+   * 
+   * Confirms that voting is immediately active after contract deployment.
+   */
   it("should return vote as active immediately after deployment", async () => {
     const isActive = simnet.callReadOnlyFn(
       "ccip026-miamicoin-burn-to-exit",
