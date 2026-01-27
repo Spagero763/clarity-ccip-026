@@ -41,6 +41,11 @@ describe("CCIP026 Core", () => {
     expect(txReceipts[1].result).toBeErr(uintCV(900)); // ERR_UNAUTHORIZED from base-dao
   });
 
+  /**
+   * Test: Proposal Metadata Retrieval
+   * 
+   * Validates that get-proposal-info returns correct CCIP details.
+   */
   it("should return correct proposal metadata", async () => {
     const proposalInfo = simnet.callReadOnlyFn(
       "ccip026-miamicoin-burn-to-exit",
