@@ -12,7 +12,7 @@ import { describe, expect, it } from "vitest";
 import { vote } from "./clients/ccip026-miamicoin-burn-to-exit-client";
 
 describe("CCIP026 Core", () => {
-  it("should not allow users to execute", async () => {
+  it("should not allow unauthorized users to execute proposal directly", async () => {
     let txReceipts: any;
     txReceipts = simnet.mineBlock([
       vote("SP39EH784WK8VYG0SXEVA0M81DGECRE25JYSZ5XSA", true),
@@ -24,10 +24,10 @@ describe("CCIP026 Core", () => {
       ),
     ]);
     expect(txReceipts[0].result).toBeOk(boolCV(true));
-    expect(txReceipts[1].result).toBeErr(uintCV(900)); // unauthorized
+    expect(txReceipts[1].result).toBeErr(uintCV(900)); // ERR_UNAUTHORIZED from base-dao
   });
 
-  it("should return correct proposal info", async () => {
+  it("should return correct proposal metadata", async () => {
     const proposalInfo = simnet.callReadOnlyFn(
       "ccip026-miamicoin-burn-to-exit",
       "get-proposal-info",
