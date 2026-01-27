@@ -65,6 +65,14 @@ describe("CCIP026 Core", () => {
     );
   });
 
+  /**
+   * Test: Vote Period Configuration
+   * 
+   * Validates the voting window settings:
+   * - Start block: 914,465
+   * - End block: 916,481
+   * - Length: 2,016 blocks (~2 weeks in Bitcoin blocks)
+   */
   it("should return correct vote period configuration", async () => {
     const votePeriod = simnet.callReadOnlyFn(
       "ccip026-miamicoin-burn-to-exit",
