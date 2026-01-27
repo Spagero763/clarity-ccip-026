@@ -24,17 +24,26 @@
 (define-constant MAX_PER_TRANSACTION (* u10000000 MICRO_CITYCOINS)) ;; max 10m MIA per transaction
 
 ;; DATA VARS
+
+;; Flag to enable/disable redemptions (set via initialize function)
 (define-data-var redemptionsEnabled bool false)
 
+;; Total MIA tokens redeemed (in micro MIA)
 (define-data-var totalRedeemed uint u0)
+
+;; Total STX transferred to users (in micro STX)
 (define-data-var totalTransferred uint u0)
 
 ;; DATA MAPS
+
+;; Tracks cumulative redemption claims per user
+;; Key: user principal
+;; Value: total MIA redeemed and STX received
 (define-map RedemptionClaims
   principal
   {
-    uMia: uint,
-    uStx: uint,
+    uMia: uint,  ;; total MIA redeemed in micro units
+    uStx: uint,  ;; total STX received in micro units
   }
 )
 
