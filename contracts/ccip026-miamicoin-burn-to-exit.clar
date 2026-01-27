@@ -61,23 +61,27 @@
 
 ;; DATA MAPS
 
+;; Tracks aggregate voting totals for each city
+;; Key: city ID (uint)
+;; Value: voting statistics including total amounts and vote counts
 (define-map CityVotes
   uint ;; city ID
   {
-    ;; vote
-    totalAmountYes: uint,
-    totalAmountNo: uint,
-    totalVotesYes: uint,
-    totalVotesNo: uint,
+    totalAmountYes: uint,  ;; total stacked MIA amount voting yes
+    totalAmountNo: uint,   ;; total stacked MIA amount voting no
+    totalVotesYes: uint,   ;; number of users voting yes
+    totalVotesNo: uint,    ;; number of users voting no
   }
 )
 
+;; Tracks individual user votes
+;; Key: user ID (uint)
+;; Value: user's vote choice and voting power
 (define-map UserVotes
   uint ;; user ID
   {
-    ;; vote
-    vote: bool,
-    mia: uint,
+    vote: bool,  ;; true = yes, false = no
+    mia: uint,   ;; scaled voting power from stacked MIA
   }
 )
 
