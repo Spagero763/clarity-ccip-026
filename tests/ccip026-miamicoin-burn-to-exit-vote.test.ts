@@ -137,6 +137,13 @@ describe("CCIP026 Vote", () => {
     checkVotes(0n, 0n, 2086372000000n, 1n);
   });
 
+  /**
+   * Test: MIA Vote Amount Calculation
+   * 
+   * Validates the get-mia-vote function returns correct voting power.
+   * Tests both scaled (with 10^16 multiplier) and unscaled values.
+   * User ID 1 has 444,375,000,000 MIA stacked.
+   */
   it("should calculate MIA vote amounts correctly", async () => {
     // Test for a known stacker
     const miaVoteScaled = simnet.callReadOnlyFn(
