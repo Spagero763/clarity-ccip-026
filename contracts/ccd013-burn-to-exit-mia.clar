@@ -125,32 +125,33 @@
       }
         (map-get? RedemptionClaims userAddress)
       ))
-      ;; limit to max amount per transaction and actual balance
+      ;; Cap amount at MAX_PER_TRANSACTION (10M MIA)
       (maxAmountUMia (if (> amountUMia MAX_PER_TRANSACTION)
         MAX_PER_TRANSACTION
         amountUMia
       ))
-      ;; v1 amount in micro MIA
+      ;; Calculate V1 redemption amount (converted to micro units)
       (redemptionAmountUMiaV1 (if (> maxAmountUMia (* balanceV1 MICRO_CITYCOINS))
         (* balanceV1 MICRO_CITYCOINS)
         maxAmountUMia
       ))
       (redemptionV1InMia (/ redemptionAmountUMiaV1 MICRO_CITYCOINS))
-      ;; v2 amount in micro MIA
+      ;; Calculate V2 redemption amount (already in micro units)
       (remainingAmountUMia (- maxAmountUMia redemptionAmountUMiaV1))
       (redemptionAmountUMiaV2 (if (> remainingAmountUMia balanceV2)
         balanceV2
         remainingAmountUMia
       ))
+      ;; Total MIA to redeem
       (redemptionTotalUMia (+ redemptionAmountUMiaV1 redemptionAmountUMiaV2))
-      ;; calculate redemption amount in uSTX
+      ;; Calculate STX payout at redemption ratio
       (redemptionAmountUStx (try! (get-redemption-for-balance redemptionTotalUMia)))
     )
-    ;; check if redemptions are enabled
+    ;; Validate redemptions are enabled
     (asserts! (var-get redemptionsEnabled) ERR_NOT_ENABLED)
-    ;; check that redemption amount is > 0
+    ;; Validate user has tokens to redeem
     (asserts! (> redemptionAmountUStx u0) ERR_NOTHING_TO_REDEEM)
-    ;; burn MIA tokens v1
+    ;; Burn V1 tokens if any
     (and
       (> redemptionV1InMia u0)
       (try! (contract-call?
