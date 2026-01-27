@@ -1,21 +1,23 @@
 ;; Title: CCD013 - MIA Burn To Exit
 ;; Version: 1.0.0
 ;; Summary: An extension that allows users to redeem MIA tokens for a portion of the MIA rewards treasury.
-;; Description: An extension that provides the ability to claim a portion of the MIA rewards treasury in exchange for MIA tokens.
+;; Description: An extension that provides the ability to claim a portion of the MIA rewards treasury 
+;;   in exchange for MIA tokens. The redemption rate is 1,700 STX per 1,000,000 MIA (0.0017 STX per MIA).
+;;   Supports both MIA V1 and V2 tokens. Maximum 10,000,000 MIA can be redeemed per transaction.
 
 ;; TRAITS
 (impl-trait 'SP8A9HZ3PKST0S42VM9523Z9NV42SZ026V4K39WH.extension-trait.extension-trait)
 
 ;; CONSTANTS
 
-;; error codes
+;; Error codes
 (define-constant ERR_UNAUTHORIZED (err u13000))
 (define-constant ERR_NOT_ENABLED (err u13005))
 (define-constant ERR_BALANCE_NOT_FOUND (err u13006))
 (define-constant ERR_NOTHING_TO_REDEEM (err u13007))
 (define-constant ERR_NOT_ENOUGH_FUNDS_IN_CONTRACT (err u13010))
 
-;; helpers
+;; Helpers
 (define-constant MICRO_CITYCOINS (pow u10 u6)) ;; 6 decimal places
 (define-constant REDEMPTION_SCALE_FACTOR (pow u10 u6)) ;; 1m MIA = 1700 STX
 (define-constant REDEMPTION_RATIO u1700) ;; start with 0.0017 STX per MIA
