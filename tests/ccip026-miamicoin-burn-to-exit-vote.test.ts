@@ -12,6 +12,13 @@ import {
 import { describe, expect, it } from "vitest";
 import { vote } from "./clients/ccip026-miamicoin-burn-to-exit-client";
 
+/**
+ * Helper function to verify vote totals in the CityVotes map
+ * @param totalAmountYes - Expected total MIA amount voting yes
+ * @param totalVotesYes - Expected number of yes votes
+ * @param totalAmountNo - Expected total MIA amount voting no
+ * @param totalVotesNo - Expected number of no votes
+ */
 const checkVotes = async (
   totalAmountYes: bigint,
   totalVotesYes: bigint,
@@ -21,7 +28,7 @@ const checkVotes = async (
   const result = simnet.getMapEntry(
     "ccip026-miamicoin-burn-to-exit",
     "CityVotes",
-    uintCV(1)
+    uintCV(1) // MIA city ID
   ) as SomeCV<
     TupleCV<{
       totalAmountYes: UIntCV;
@@ -36,6 +43,10 @@ const checkVotes = async (
   expect(result.value.value.totalVotesNo.value).toBe(totalVotesNo);
 };
 
+/**
+ * Helper function to verify proposal executability status
+ * @param expected - Expected response (ok or err)
+ */
 const checkIsExecutable = (expected: ResponseCV) => {
   const receipt = simnet.callReadOnlyFn(
     "ccip026-miamicoin-burn-to-exit",
@@ -47,15 +58,15 @@ const checkIsExecutable = (expected: ResponseCV) => {
 };
 
 describe("CCIP026 Vote", () => {
-  it("should not allow non-holders or non stackers to vote", async () => {
+  it("should reject votes from non-stackers and unregistered users", async () => {
     let txReceipts: any;
     txReceipts = simnet.mineBlock([
-      vote("SP18Z92ZT0GAB2JHD21CZ3KS1WPGNDJCYZS7CV3MD", true), // not a holder
-      vote("SP22HP2QFA16AAP62HJWD85AKMYJ5AYRTH7TBT9MX", true), // holder of v1
+      vote("SP18Z92ZT0GAB2JHD21CZ3KS1WPGNDJCYZS7CV3MD", true), // not a stacker
+      vote("SP22HP2QFA16AAP62HJWD85AKMYJ5AYRTH7TBT9MX", true), // v1 holder but not registered
     ]);
-    expect(txReceipts[0].result).toBeErr(uintCV(26003));
-    expect(txReceipts[1].result).toBeErr(uintCV(26004));
-    checkIsExecutable(responseErrorCV(uintCV(26007))); // vote failed
+    expect(txReceipts[0].result).toBeErr(uintCV(26003)); // ERR_NOTHING_STACKED
+    expect(txReceipts[1].result).toBeErr(uintCV(26004)); // ERR_USER_NOT_FOUND
+    checkIsExecutable(responseErrorCV(uintCV(26007))); // ERR_VOTE_FAILED
   });
 
   it("should not allow voting twice with same choice", async () => {
