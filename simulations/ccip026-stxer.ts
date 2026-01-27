@@ -73,10 +73,13 @@ function redeem(sender: string, nonce: number, amount: number) {
     function_args: [uintCV(amount)],
     nonce: nonce++,
     sender,
-    ...common_params,
+    ...COMMON_TX_PARAMS,
   };
 }
 
+/**
+ * Creates a convert-to-v2 transaction for MIA token migration
+ */
 function convertToV2(sender: string, nonce: number) {
   return {
     contract_id: `SP1H1733V5MZ3SZ9XRW9FKYGEZT0JDGEB8Y634C7R.miamicoin-token-v2`,
@@ -84,7 +87,7 @@ function convertToV2(sender: string, nonce: number) {
     function_args: [],
     nonce: nonce++,
     sender,
-    ...common_params,
+    ...COMMON_TX_PARAMS,
   };
 }
 
