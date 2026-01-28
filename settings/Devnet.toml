@@ -41,9 +41,7 @@ sbtc_balance = 1_000_000_000
 mnemonic = "hurry aunt blame peanut heavy update captain human rice crime juice adult scale device promote vast project quiz unit note reform update climb purchase"
 balance = 100_000_000_000_000
 sbtc_balance = 1_000_000_000
-# secret_key: 3eccc5dac8056590432db6a35d52b9896876a3d5cbdea53b72400bc9c2099fe801
-# stx_address: ST2REHHS5J3CERCRBEPMGH7921Q6PYKAADT7JP2VB
-# btc_address: mweN5WVqadScHdA81aATSdcVr4B6dNokqx
+
 
 [accounts.wallet_6]
 mnemonic = "area desk dutch sign gold cricket dawn toward giggle vibrant indoor bench warfare wagon number tiny universe sand talk dilemma pottery bone trap buddy"
